@@ -8,7 +8,7 @@ A full-stack authentication system built using the MERN stack. This project impl
 
 ## 📂 GitHub Repository
 
-🔗 **Repository:** https://github.com/your-username/mern-authentication-system
+🔗 **Repository:** https://github.com/SatyadiptaMoharana/mern-authentication-system
 
 ---
 
