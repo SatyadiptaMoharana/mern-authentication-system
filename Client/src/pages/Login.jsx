@@ -62,10 +62,6 @@ function Login() {
     }
   }
 
-  useEffect(() => {
-    isLoggedin && navigate('/')
-  }, [isLoggedin])
-
   return (
     <div className="min-h-screen w-full bg-linear-to-br from-slate-100 via-slate-50 to-indigo-100 px-6 sm:px-10 lg:px-16">
 
