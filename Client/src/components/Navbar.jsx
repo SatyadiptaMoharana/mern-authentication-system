@@ -1,50 +1,59 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../assets/authentication.png";
 import arrow from "../assets/right-arrow.png";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { userData, backendUrl, setUserData, setIsLoggedin } = useContext(AppContext);
+
+  const { userData, backendUrl, setUserData, setIsLoggedin } =
+    useContext(AppContext);
+
+  // Controls dropdown on mobile
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const sendVerificationOtp = async () => {
-
-    //this line is mandatory if u want to sent cookies
-    axios.defaults.withCredentials = true
+    // This line is mandatory if you want to send cookies
+    axios.defaults.withCredentials = true;
 
     try {
-      
-      const {data} = await axios.post(backendUrl + '/api/auth/send-verify-otp')
+      const { data } = await axios.post(
+        backendUrl + "/api/auth/send-verify-otp"
+      );
 
-      if(data.success){
-        navigate('/email-verify')
-        toast.success(data.message)
-      }else{
-        toast.error(data.message)
+      if (data.success) {
+        setIsMenuOpen(false);
+        navigate("/email-verify");
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
       }
-
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const logout = async () => {
     try {
-      
-      axios.defaults.withCredentials = true
+      axios.defaults.withCredentials = true;
 
-      const {data} = await axios.post(backendUrl + '/api/auth/logout')
-      data.success && setIsLoggedin(false)
-      data.success && setUserData(false)
-      navigate('/')
+      const { data } = await axios.post(backendUrl + "/api/auth/logout");
 
+      if (data.success) {
+        setIsLoggedin(false);
+        setUserData(false);
+        setIsMenuOpen(false);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   return (
     <nav className="w-full py-5 flex items-center justify-between">
@@ -70,6 +79,7 @@ function Navbar() {
 
           {/* Profile Avatar */}
           <div
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="w-10 h-10 flex items-center justify-center
             rounded-full bg-linear-to-br from-indigo-500 to-purple-600
             text-white font-semibold text-sm
@@ -83,8 +93,9 @@ function Navbar() {
 
           {/* Dropdown */}
           <div
-            className="absolute right-0 top-full pt-3
-            hidden group-hover:block z-50"
+            className={`absolute right-0 top-full pt-3 z-50
+            ${isMenuOpen ? "block" : "hidden"}
+            md:group-hover:block`}
           >
             <div
               className="w-48 overflow-hidden
@@ -106,6 +117,7 @@ function Navbar() {
               {/* Menu */}
               <ul className="p-1.5">
 
+                {/* Verify Email */}
                 {!userData.isAccountVerified && (
                   <li
                     onClick={sendVerificationOtp}
@@ -119,6 +131,7 @@ function Navbar() {
                   </li>
                 )}
 
+                {/* Logout */}
                 <li
                   onClick={logout}
                   className="px-3 py-2.5 rounded-lg
@@ -135,6 +148,7 @@ function Navbar() {
           </div>
         </div>
       ) : (
+        /* Login Button */
         <button
           className="group flex items-center gap-2 px-4 py-2.5
           rounded-xl border border-gray-200 bg-white
