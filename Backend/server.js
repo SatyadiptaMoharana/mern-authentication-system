@@ -13,7 +13,10 @@ let port = process.env.PORT || 6700;
 await connectDB();  
 
 //you can have multiple frontend urls in this
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -25,4 +28,4 @@ app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
 
 
-app.listen(port, () => console.log(`Server is running at localhost:${port}`))
+app.listen(port, () => console.log(`Server is running on port ${port}`))
